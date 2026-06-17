@@ -13,7 +13,7 @@ name = "hipfire-arwaky-run"
 path = "src/run.rs"
 
 [dependencies]
-hipfire-runtime = { path = "../local-patched/hipfire-runtime" }
-hipfire-arch-qwen35 = { path = "../local-patched/hipfire-arch-qwen35" }
-rdna-compute = { path = "../local-patched/rdna-compute" }
+hipfire-runtime = { path = "../local-patched/hipfire-runtime", features = ["deltanet", "arch-qwen35"] }
+hipfire-arch-qwen35 = { path = "../local-patched/hipfire-arch-qwen35", features = ["deltanet"] }
+rdna-compute = { path = "../local-patched/rdna-compute", features = ["deltanet"] }
 libc = { workspace = true }
