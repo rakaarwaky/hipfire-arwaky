@@ -233,6 +233,7 @@ fn main() {
         seq_pos += new_tokens.len();
         conversation_tokens.extend_from_slice(&new_tokens);
 
+        let t0 = Instant::now();
         let mut generated = 0usize;
         let mut in_thinking = false;
         let mut thinking_shown = false;
@@ -317,7 +318,16 @@ fn main() {
         conversation_tokens.extend_from_slice(&im_end);
         conversation_tokens.extend_from_slice(&nl);
 
-        eprintln!();
+        let elapsed = t0.elapsed();
+        let tok_s = generated as f64 / elapsed.as_secs_f64();
+        if spec_active && spec_stats.cycles > 0 {
+            eprintln!(
+                "\n\x1b[2m({} tokens, {:.1} tok/s | spec: {} cycles, tau={:.2})\x1b[0m\n",
+                generated, tok_s, spec_stats.cycles, spec_stats.tau()
+            );
+        } else {
+            eprintln!("\n\x1b[2m({} tokens, {:.1} tok/s)\x1b[0m\n", generated, tok_s);
+        }
         std::process::exit(0);
     }
 
@@ -421,6 +431,7 @@ fn main() {
         seq_pos += new_tokens.len();
         conversation_tokens.extend_from_slice(&new_tokens);
 
+        let t0 = Instant::now();
         let mut generated = 0usize;
         let mut in_thinking = false;
         let mut thinking_shown = false;
