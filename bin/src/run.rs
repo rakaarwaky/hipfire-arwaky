@@ -36,10 +36,23 @@ fn main() {
 
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 2 {
-        eprintln!("Usage: run <model.hfq> [--draft-model <path>] [--system \"prompt\"] [--kv givens4|givens2] [--temp F] [--max-seq N] [--fp32-state|--q8-state|--q4-state]");
+        eprintln!("Usage: run <model.hfq> [prompt] [--draft-model <path>] [--system \"prompt\"] [--kv givens4|givens2] [--temp F] [--max-seq N] [--fp32-state|--q8-state|--q4-state]");
         std::process::exit(1);
     }
     let model_path = &args[1];
+
+    // Check if there's a prompt argument (non-interactive mode)
+    // Prompt is any non-flag argument after model path
+    let mut prompt: Option<String> = None;
+    let mut i = 2;
+    while i < args.len() {
+        if !args[i].starts_with("--") {
+            prompt = Some(args[i].clone());
+            i += 1;
+            break;
+        }
+        i += 1;
+    }
 
     let mut system_prompt: Option<String> = None;
     let mut kv_mode_str: String = "fwht3".to_string();
@@ -178,6 +191,135 @@ fn main() {
     let mut conversation_tokens: Vec<u32> = Vec::new();
     let mut total_tokens: usize = 0;
     let mut spec_stats = hipfire_arch_qwen35::speculative::SpecStats::new(spec_k);
+
+    // Non-interactive mode: single prompt, generate response, exit
+    if let Some(prompt) = prompt {
+        let input_norm = hipfire_runtime::tokenizer::maybe_normalize_prompt(&prompt);
+        let input: &str = &input_norm;
+
+        let q_tokens = tokenizer.encode(input);
+        let mut new_tokens: Vec<u32> = Vec::new();
+
+        if seq_pos == 0 {
+            if let Some(ref sys) = system_prompt {
+                let sys_tok = tokenizer.encode("system");
+                let sys_content = tokenizer.encode(sys);
+                new_tokens.extend_from_slice(&im_start);
+                new_tokens.extend_from_slice(&sys_tok);
+                new_tokens.extend_from_slice(&nl);
+                new_tokens.extend_from_slice(&sys_content);
+                new_tokens.extend_from_slice(&im_end);
+                new_tokens.extend_from_slice(&nl);
+            }
+        }
+        new_tokens.extend_from_slice(&im_start);
+        new_tokens.extend_from_slice(&user_tok);
+        new_tokens.extend_from_slice(&nl);
+        new_tokens.extend_from_slice(&q_tokens);
+        new_tokens.extend_from_slice(&im_end);
+        new_tokens.extend_from_slice(&nl);
+        new_tokens.extend_from_slice(&im_start);
+        new_tokens.extend_from_slice(&asst_tok);
+        new_tokens.extend_from_slice(&nl);
+
+        for (i, &tok) in new_tokens.iter().enumerate() {
+            target_slot.forward(&mut gpu, tok, seq_pos + i).unwrap();
+            if spec_active {
+                if let Some(ref mut d) = draft_slot {
+                    d.forward(&mut gpu, tok, seq_pos + i).unwrap();
+                }
+            }
+        }
+        seq_pos += new_tokens.len();
+        conversation_tokens.extend_from_slice(&new_tokens);
+
+        let mut generated = 0usize;
+        let mut in_thinking = false;
+        let mut thinking_shown = false;
+        let eos_token = target_slot.config.eos_token;
+        let im_end_token_val = im_end_token;
+
+        let emit_token = |tok: u32,
+                          conversation_tokens: &mut Vec<u32>,
+                          in_thinking: &mut bool,
+                          thinking_shown: &mut bool,
+                          generated: &mut usize| -> bool {
+            *generated += 1;
+            conversation_tokens.push(tok);
+            let text = tokenizer.decode(&[tok]);
+            if text.contains("｟think") || text.contains("｟thinking") {
+                *in_thinking = true;
+                if !*thinking_shown {
+                    eprint!("\x1b[2m");
+                    *thinking_shown = true;
+                }
+            }
+            if *in_thinking {
+                eprint!("{}", text);
+                if text.contains("｠") || text.contains("｟/think") {
+                    *in_thinking = false;
+                    eprint!("\x1b[0m\n");
+                }
+            } else {
+                print!("{}", text);
+                std::io::stdout().flush().unwrap();
+            }
+            tok == eos_token || im_end_token_val == Some(tok) || tokenizer.is_terminator(tok)
+        };
+
+        if spec_active {
+            let ts = target_snap.as_mut().unwrap();
+            let ds = draft_snap.as_mut().unwrap();
+            let draft_ref = draft_slot.as_mut().unwrap();
+            'outer: loop {
+                let pos = seq_pos + generated;
+                if pos + spec_k + 1 >= max_seq { break; }
+
+                let step = hipfire_arch_qwen35::speculative::spec_step_greedy(
+                    &mut gpu, &mut target_slot, draft_ref, pos, spec_k, ts, ds,
+                ).unwrap();
+                spec_stats.record(&step);
+
+                for tok in &step.committed {
+                    let stop = emit_token(
+                        *tok, &mut conversation_tokens,
+                        &mut in_thinking, &mut thinking_shown, &mut generated,
+                    );
+                    if stop { break 'outer; }
+                    if generated >= 2048 { break 'outer; }
+                }
+            }
+        } else {
+            let mut logits = gpu.download_f32(&target_slot.scratch.logits).unwrap();
+            let mut next_token = llama::sample_top_p(&logits, temp, sc.top_p);
+            loop {
+                let stop = emit_token(
+                    next_token, &mut conversation_tokens,
+                    &mut in_thinking, &mut thinking_shown, &mut generated,
+                );
+                if stop { break; }
+                if generated >= 2048 { break; }
+
+                let pos = seq_pos + generated - 1;
+                if pos >= max_seq { break; }
+                target_slot.forward(&mut gpu, next_token, pos).unwrap();
+                logits = gpu.download_f32(&target_slot.scratch.logits).unwrap();
+                if !no_penalty {
+                    llama::apply_ngram_block(&mut logits, &conversation_tokens);
+                    llama::apply_repeat_penalty(&mut logits, &conversation_tokens, sc.repeat_window, sc.repeat_penalty);
+                }
+                next_token = llama::sample_top_p(&logits, temp, sc.top_p);
+            }
+        }
+
+        seq_pos += generated;
+        total_tokens += generated;
+        conversation_tokens.extend_from_slice(&im_end);
+        conversation_tokens.extend_from_slice(&nl);
+
+        eprintln!();
+        std::process::exit(0);
+    }
 
     let stdin = std::io::stdin();
     loop {

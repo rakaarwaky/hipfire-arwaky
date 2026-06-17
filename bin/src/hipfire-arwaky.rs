@@ -12,12 +12,11 @@ fn main() {
     let rest: &[String] = &args[2..];
 
     match cmd.as_str() {
-        // Native: run inference via hipfire-arwaky-run
-        "run" | "chat" => exec_native("hipfire-arwaky-run", rest),
+        // Native: run inference via hipfire-arwaky-run (interactive + non-interactive)
+        "run" => exec_native("hipfire-arwaky-run", rest),
 
-        // Native: daemon via hipfire-arwaky-daemon
-        "serve" => exec_native("hipfire-arwaky-daemon", rest),
-        "stop" => exec_native("hipfire-arwaky-daemon", &["stop".to_string()]),
+        // Native: chat (alias for run, same behavior)
+        "chat" => exec_native("hipfire-arwaky-run", rest),
 
         // TUI config editor
         "tui" => exec_native("hipfire-arwaky-tui", rest),
@@ -31,7 +30,8 @@ fn main() {
 
         // Delegate all other commands to upstream hipfire CLI
         "list" | "ls" | "pull" | "ps" | "rm" | "config" | "diag"
-        | "bench" | "update" | "profile" | "quantize" | "sidecar-gen" => {
+        | "bench" | "update" | "profile" | "quantize" | "sidecar-gen"
+        | "serve" | "stop" => {
             delegate_upstream(cmd, rest);
         }
 
@@ -68,7 +68,7 @@ fn delegate_upstream(cmd: &str, cmd_args: &[String]) {
     let upstream = std::path::Path::new(&home).join(".hipfire").join("bin").join("hipfire");
     if !upstream.exists() {
         eprintln!("hipfire-arwaky: upstream hipfire CLI not found at {}", upstream.display());
-        eprintln!("Install hipfire or use one of the native commands: run, serve, help");
+        eprintln!("Install hipfire or use native commands: run, chat, tui, version, help");
         process::exit(1);
     }
     let mut full_args = vec![upstream.to_string_lossy().to_string(), cmd.to_string()];
@@ -86,20 +86,27 @@ fn print_usage() {
     println!("Usage: hipfire-arwaky <command> [options]");
     println!();
     println!("Native commands (run without upstream hipfire):");
-    println!("  run|chat <model.hfq>  Interactive REPL");
-    println!("  serve [host:port]     Start daemon server");
-    println!("  stop                  Stop daemon server");
-    println!("  tui                   Terminal UI config editor");
-    println!("  version               Print version info");
+    println!("  run <model.hfq> [prompt]   Interactive REPL or single prompt");
+    println!("  chat <model.hfq> [prompt]  Alias for run");
+    println!("  tui                        Terminal UI config editor");
+    println!("  version                    Print version info");
     println!();
     println!("Delegated commands (require upstream hipfire CLI):");
-    println!("  list|ls               List downloaded models");
-    println!("  pull <model>          Download a model");
-    println!("  ps                    List running daemon processes");
-    println!("  rm <model>            Remove a model");
-    println!("  config                Configuration editor (upstream)");
-    println!("  diag                  System diagnostics");
-    println!("  bench                 Run benchmarks");
-    println!("  update                Update hipfire");
-    println!("  help                  Show this help");
+    println!("  pull <model>               Download a model");
+    println!("  run <model> [prompt]       Upstream run (if model not .hfq)");
+    println!("  chat <model>               Upstream chat");
+    println!("  serve [host] [port] [-d]   Start daemon server");
+    println!("  stop                       Stop daemon server");
+    println!("  quantize <hf-id|dir>       Quantize model to HFQ");
+    println!("  bench <model> [opts]       Run benchmarks");
+    println!("  profile [model]            Profile model");
+    println!("  list [-r]                  List downloaded models");
+    println!("  config                     Configuration editor");
+    println!("  tui                        Upstream TUI");
+    println!("  diag                       System diagnostics");
+    println!("  ps                         List running daemon processes");
+    println!("  rm <model>                 Remove a model");
+    println!("  sidecar-gen <model>        Generate sidecar files");
+    println!("  update                     Update hipfire");
+    println!("  help                       Show this help");
 }
