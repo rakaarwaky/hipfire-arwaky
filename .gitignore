@@ -28,5 +28,8 @@ result
 result-*
 *.drv
 
+# Generated patched crates (by cargo xtask patch)
+/local-patched
+
 # Logs
 *.log
