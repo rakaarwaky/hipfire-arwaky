@@ -59,12 +59,9 @@ const ESSENTIAL_CRATES: &[&str] = &[
     "hipfire-runtime",
     "hipfire-arch-qwen35",
     "hipfire-quantize",
-];
-
-// Optional crates (include with --crates flag if needed)
-const OPTIONAL_CRATES: &[&str] = &[
     "hipfire-detect",
     "hipfire-atlas",
+    "hipfire-tui",
 ];
 
 const PATCHES_DIR: &str = "patches";
