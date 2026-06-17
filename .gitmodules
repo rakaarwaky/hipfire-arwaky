@@ -1,0 +1,3 @@
+[submodule "hipfire-master"]
+	path = hipfire-master
+	url = https://github.com/Kaden-Schutt/hipfire

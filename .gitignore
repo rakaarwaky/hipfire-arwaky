@@ -1,0 +1,32 @@
+# Build artifacts
+/target
+*.o
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Local config
+.env
+.env.local
+.env.*.local
+
+# Cargo
+Cargo.lock
+
+# Nix
+result
+result-*
+*.drv
+
+# Logs
+*.log
