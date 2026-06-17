@@ -8,7 +8,7 @@ MODEL="${1:-carnice-9b.mq4}"
 RUNS="${2:-3}"
 PROMPT="${3:-What is the capital of France?}"
 
-HIPFIRE_DIR="$HOME/.hipfire"
+HIPFIRE_DIR="/home/raka/.hipfire"
 ARWAKY_DIR="$HOME/.hipfire-arwaky"
 
 HIPFIRE_MODEL="$HIPFIRE_DIR/models/$MODEL"
