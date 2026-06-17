@@ -30,7 +30,39 @@
  hipfire-detect = { path = "../hipfire-detect" }
  hipfire-atlas = { path = "../hipfire-atlas" }
  
-@@ -348,10 +336,6 @@
+@@ -118,7 +106,7 @@
+ 
+ [[example]]
+ name = "daemon"
+-required-features = ["arch-qwen35", "arch-qwen35-vl", "arch-llama", "arch-qwen2", "arch-deepseek4", "arch-dots-ocr"]
++required-features = ["arch-qwen35"]
+ 
+ [[example]]
+ name = "hfq_split"
+@@ -137,22 +125,6 @@
+ required-features = ["arch-qwen35"]
+ 
+ [[example]]
+-name = "infer_qwen3"
+-required-features = ["arch-llama"]
+-
+-[[example]]
+-name = "infer_vl"
+-required-features = ["arch-qwen35-vl", "arch-qwen35"]
+-
+-[[example]]
+-name = "infer"
+-required-features = ["arch-qwen35", "arch-qwen35-vl"]
+-
+-[[example]]
+-name = "infer_hfq"
+-required-features = ["arch-llama"]
+-
+-[[example]]
+ name = "run"
+ required-features = ["arch-qwen35", "deltanet"]
+ 
+@@ -348,10 +320,6 @@
  # the qwen35 arch. Per-token scoring only — llama-arch
  # `forward_prefill_batch` doesn't expose the hidden-state capture hook
  # that eval_hipfire's prefill mode relies on.

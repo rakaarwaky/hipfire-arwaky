@@ -14,12 +14,6 @@ members = [
     "xtask",
 ]
 # ── Patch section: redirect selected upstream crates to patched versions ──
-# Keeps only runtime/arch crates patched for Qwen3.5; other essential crates build
-# directly from the `crates/` symlinks to avoid duplicate package IDs.
-# [patch."https://github.com/Kaden-Schutt/hipfire"]
-# hipfire-runtime = { path = "local-patched/hipfire-runtime" }
-# hipfire-arch-qwen35 = { path = "local-patched/hipfire-arch-qwen35" }
-
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
