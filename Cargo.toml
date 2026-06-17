@@ -11,6 +11,7 @@ members = [
     "local-patched/hipfire-tui",
     "local-patched/hipfire-runtime",
     "local-patched/hipfire-arch-qwen35",
+    "bin",
     "xtask",
 ]
 # ── Patch section: redirect selected upstream crates to patched versions ──

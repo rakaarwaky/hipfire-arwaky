@@ -1,0 +1,19 @@
+[package]
+name = "hipfire-arwaky-bin"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "hipfire-arwaky"
+path = "src/hipfire-arwaky.rs"
+
+[[bin]]
+name = "hipfire-arwaky-run"
+path = "src/run.rs"
+
+[dependencies]
+hipfire-runtime = { path = "../local-patched/hipfire-runtime" }
+hipfire-arch-qwen35 = { path = "../local-patched/hipfire-arch-qwen35" }
+rdna-compute = { path = "../local-patched/rdna-compute" }
+libc = { workspace = true }

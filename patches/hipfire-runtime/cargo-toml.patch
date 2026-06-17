@@ -1,6 +1,6 @@
---- a/Cargo.toml
-+++ b/Cargo.toml
-@@ -40,14 +40,9 @@
+--- crates/hipfire-runtime/Cargo.toml	2026-06-18 04:26:38.233863170 +0700
++++ local-patched/hipfire-runtime/Cargo.toml	2026-06-18 04:37:50.817968670 +0700
+@@ -40,18 +40,14 @@
  # block below) which serves both as documentation of which features
  # each example needs and as the gate for downstream library consumers
  # who attempt to build examples through their own build script.
@@ -16,7 +16,12 @@
  [dependencies]
  hip-bridge = { path = "../hip-bridge" }
  rdna-compute = { path = "../rdna-compute" }
-@@ -97,13 +92,6 @@
+ hipfire-dispatch = { path = "../hipfire-dispatch" }
++
+ memmap2 = "0.9"
+ byteorder = "1"
+ serde = { version = "1", features = ["derive"] }
+@@ -97,13 +93,6 @@
  # below.
  [dev-dependencies]
  hipfire-arch-qwen35 = { path = "../hipfire-arch-qwen35" }
@@ -30,7 +35,7 @@
  hipfire-detect = { path = "../hipfire-detect" }
  hipfire-atlas = { path = "../hipfire-atlas" }
  
-@@ -118,7 +106,7 @@
+@@ -118,7 +107,7 @@
  
  [[example]]
  name = "daemon"
@@ -39,7 +44,7 @@
  
  [[example]]
  name = "hfq_split"
-@@ -137,22 +125,6 @@
+@@ -137,22 +126,6 @@
  required-features = ["arch-qwen35"]
  
  [[example]]
@@ -62,7 +67,7 @@
  name = "run"
  required-features = ["arch-qwen35", "deltanet"]
  
-@@ -348,10 +320,6 @@
+@@ -348,10 +321,6 @@
  # the qwen35 arch. Per-token scoring only — llama-arch
  # `forward_prefill_batch` doesn't expose the hidden-state capture hook
  # that eval_hipfire's prefill mode relies on.
@@ -73,3 +78,14 @@
  # Tokenizer-parity helper: reads a .hfq's tokenizer + tokenizes a text slice.
  # No GPU / arch features needed (tokenizer is pure CPU).
  [[example]]
+@@ -385,6 +354,10 @@
+ # `required-features = ["arch-qwen35", "arch-llama"]` (or whichever
+ # arches the Tier 1 path supports).
+ [[bin]]
++name = "hipfire-arwaky"
++path = "src/bin/hipfire-arwaky.rs"
++
++[[bin]]
+ name = "collect_imatrix"
+ path = "src/bin/collect_imatrix.rs"
+ required-features = []
