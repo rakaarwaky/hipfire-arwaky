@@ -89,7 +89,7 @@ fn print_usage() {
     println!("  run|chat <model.hfq>  Interactive REPL");
     println!("  serve [host:port]     Start daemon server");
     println!("  stop                  Stop daemon server");
-    println!("  tui|config            Terminal UI config editor");
+    println!("  tui                   Terminal UI config editor");
     println!("  version               Print version info");
     println!();
     println!("Delegated commands (require upstream hipfire CLI):");
@@ -97,6 +97,7 @@ fn print_usage() {
     println!("  pull <model>          Download a model");
     println!("  ps                    List running daemon processes");
     println!("  rm <model>            Remove a model");
+    println!("  config                Configuration editor (upstream)");
     println!("  diag                  System diagnostics");
     println!("  bench                 Run benchmarks");
     println!("  update                Update hipfire");
