@@ -30,7 +30,7 @@ fn main() {
         }
 
         // Delegate all other commands to upstream hipfire CLI
-        "list" | "ls" | "pull" | "ps" | "rm" | "diag"
+        "list" | "ls" | "pull" | "ps" | "rm" | "config" | "diag"
         | "bench" | "update" | "profile" | "quantize" | "sidecar-gen" => {
             delegate_upstream(cmd, rest);
         }
