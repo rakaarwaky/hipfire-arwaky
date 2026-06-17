@@ -19,6 +19,9 @@ fn main() {
         "serve" => exec_native("hipfire-arwaky-daemon", rest),
         "stop" => exec_native("hipfire-arwaky-daemon", &["stop".to_string()]),
 
+        // TUI config editor
+        "tui" => exec_native("hipfire-arwaky-tui", rest),
+
         // Version
         "version" | "--version" | "-v" => {
             println!("hipfire-arwaky 0.1.0");
@@ -27,7 +30,7 @@ fn main() {
         }
 
         // Delegate all other commands to upstream hipfire CLI
-        "list" | "ls" | "pull" | "ps" | "rm" | "config" | "diag"
+        "list" | "ls" | "pull" | "ps" | "rm" | "diag"
         | "bench" | "update" | "profile" | "quantize" | "sidecar-gen" => {
             delegate_upstream(cmd, rest);
         }
@@ -86,6 +89,7 @@ fn print_usage() {
     println!("  run|chat <model.hfq>  Interactive REPL");
     println!("  serve [host:port]     Start daemon server");
     println!("  stop                  Stop daemon server");
+    println!("  tui|config            Terminal UI config editor");
     println!("  version               Print version info");
     println!();
     println!("Delegated commands (require upstream hipfire CLI):");
@@ -93,7 +97,6 @@ fn print_usage() {
     println!("  pull <model>          Download a model");
     println!("  ps                    List running daemon processes");
     println!("  rm <model>            Remove a model");
-    println!("  config                Configuration editor");
     println!("  diag                  System diagnostics");
     println!("  bench                 Run benchmarks");
     println!("  update                Update hipfire");
