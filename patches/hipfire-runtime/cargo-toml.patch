@@ -1,17 +1,16 @@
 --- a/Cargo.toml
 +++ b/Cargo.toml
-@@ -43,11 +43,7 @@
- default = ["arch-qwen35", "arch-qwen35-vl", "arch-llama", "arch-qwen2", "arch-deepseek4", "arch-dots-ocr", "deltanet"]
- deltanet = ["rdna-compute/deltanet", "hipfire-dispatch/deltanet"]
- arch-qwen35 = []
+@@ -46,8 +46,6 @@
  arch-qwen35-vl = []
  arch-llama = []
+ arch-qwen2 = []
 -arch-deepseek4 = []
 -arch-dots-ocr = []
  [dependencies]
  hip-bridge = { path = "../hip-bridge" }
  rdna-compute = { path = "../rdna-compute" }
-@@ -98,17 +94,9 @@
+@@ -96,14 +94,7 @@
+ # features above and `required-features` on each `[[example]]` block
  # below.
  [dev-dependencies]
 -hipfire-arch-qwen35 = { path = "../hipfire-arch-qwen35" }
@@ -26,16 +25,14 @@
  hipfire-detect = { path = "../hipfire-detect" }
  hipfire-atlas = { path = "../hipfire-atlas" }
  
-@@ -220,11 +208,6 @@ required-features = ["arch-qwen35", "deltanet"]
- name = "pp_parity_chatml"
- required-features = ["arch-qwen35", "deltanet"]
- 
+@@ -348,10 +339,6 @@
+ # the qwen35 arch. Per-token scoring only — llama-arch
+ # `forward_prefill_batch` doesn't expose the hidden-state capture hook
+ # that eval_hipfire's prefill mode relies on.
 -[[example]]
 -name = "eval_hipfire_llama"
 -required-features = ["arch-llama"]
 -
--# Tokenizer-parity helper: reads a .hfq's tokenizer + tokenizes a text slice.
--# No GPU / arch features needed (tokenizer is pure CPU).
+ # Tokenizer-parity helper: reads a .hfq's tokenizer + tokenizes a text slice.
+ # No GPU / arch features needed (tokenizer is pure CPU).
  [[example]]
- name = "tokenize_slice"
- required-features = []
