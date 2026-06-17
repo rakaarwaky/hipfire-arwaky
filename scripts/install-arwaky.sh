@@ -26,7 +26,8 @@ mkdir -p "$BIN_DIR" "$MODELS_DIR"
 echo "Installing binaries to $BIN_DIR/ ..."
 cp "$TARGET_DIR/hipfire-arwaky" "$BIN_DIR/hipfire-arwaky"
 cp "$TARGET_DIR/hipfire-arwaky-run" "$BIN_DIR/hipfire-arwaky-run"
-chmod +x "$BIN_DIR/hipfire-arwaky" "$BIN_DIR/hipfire-arwaky-run"
+cp "$TARGET_DIR/hipfire-arwaky-tui" "$BIN_DIR/hipfire-arwaky-tui" 2>/dev/null || true
+chmod +x "$BIN_DIR/hipfire-arwaky" "$BIN_DIR/hipfire-arwaky-run" "$BIN_DIR/hipfire-arwaky-tui" 2>/dev/null || true
 
 # Create symlink for easy access
 echo "Creating symlink..."
@@ -56,8 +57,9 @@ echo "  Binaries:  $BIN_DIR/"
 echo "  Models:    $MODELS_DIR/"
 echo ""
 echo "Usage:"
-echo "  hipfire-arwaky run /path/to/model.hfq"
-echo "  hipfire-arwaky run model.hfq --system \"You are helpful\" --temp 0.7"
+echo "  hipfire-arwaky run /path/to/model.mq4"
+echo "  hipfire-arwaky config              # TUI config editor"
+echo "  hipfire-arwaky list                # list models"
 echo "  hipfire-arwaky version"
 echo ""
-echo "Short alias: hfa run /path/to/model.hfq"
+echo "Short alias: hfa run /path/to/model.mq4"
