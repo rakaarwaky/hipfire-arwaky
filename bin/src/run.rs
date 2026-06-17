@@ -42,7 +42,7 @@ fn main() {
     let model_path = &args[1];
 
     let mut system_prompt: Option<String> = None;
-    let mut kv_mode_str: String = "q8".to_string();
+    let mut kv_mode_str: String = "fwht3".to_string();
     let mut temp: f32 = 0.3;
     let mut max_seq: usize = 4096;
     let mut state_quant = qwen35::StateQuant::Q8;
@@ -80,7 +80,14 @@ fn main() {
     }
     warn_tiny_model_state(model_path, state_quant);
     eprintln!("KV cache: {kv_mode_str}");
-    let target_kv_mode = KvMode::Q8;
+    let target_kv_mode = match kv_mode_str.as_str() {
+        "fwht3" => KvMode::Fwht3,
+        "fwht2" => KvMode::Fwht2,
+        "asym4" => KvMode::Asym4,
+        "asym3" => KvMode::Asym3,
+        "asym2" => KvMode::Asym2,
+        _ => KvMode::Fwht3,  // default for gfx1030, same as upstream
+    };
     let target_cfg = ModelSlotConfig {
         max_seq, kv_mode: target_kv_mode, repeat_window: 128, state_quant,
     };
