@@ -12,10 +12,18 @@ TARGET_DIR="$SRC_DIR/target/release"
 echo "=== hipfire-arwaky installer ==="
 echo ""
 
+# Build first
+echo "Building binaries..."
+cd "$SRC_DIR"
+cargo xtask patch --force 2>/dev/null || true
+cargo build --release -p hipfire-runtime --bin hipfire-arwaky 2>&1 | tail -3
+cargo build --release -p hipfire-arwaky-bin 2>&1 | tail -3
+cargo build --release -p hipfire-tui 2>&1 | tail -3
+echo ""
+
 # Check binaries exist
 if [ ! -f "$TARGET_DIR/hipfire-arwaky" ]; then
-    echo "ERROR: Binary not found at $TARGET_DIR/hipfire-arwaky"
-    echo "Build first: cargo build --release -p hipfire-runtime --bin hipfire-arwaky -p hipfire-arwaky-bin"
+    echo "ERROR: Build failed — $TARGET_DIR/hipfire-arwaky not found"
     exit 1
 fi
 
