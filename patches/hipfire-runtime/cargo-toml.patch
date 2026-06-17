@@ -1,0 +1,41 @@
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -43,11 +43,7 @@
+ default = ["arch-qwen35", "arch-qwen35-vl", "arch-llama", "arch-qwen2", "arch-deepseek4", "arch-dots-ocr", "deltanet"]
+ deltanet = ["rdna-compute/deltanet", "hipfire-dispatch/deltanet"]
+ arch-qwen35 = []
+ arch-qwen35-vl = []
+ arch-llama = []
+-arch-deepseek4 = []
+-arch-dots-ocr = []
+ [dependencies]
+ hip-bridge = { path = "../hip-bridge" }
+ rdna-compute = { path = "../rdna-compute" }
+@@ -98,17 +94,9 @@
+ # below.
+ [dev-dependencies]
+-hipfire-arch-qwen35 = { path = "../hipfire-arch-qwen35" }
+-hipfire-arch-qwen35-vl = { path = "../hipfire-arch-qwen35-vl" }
+-hipfire-arch-llama = { path = "../hipfire-arch-llama" }
+-hipfire-arch-qwen2 = { path = "../hipfire-arch-qwen2" }
+-hipfire-arch-lfm2moe = { path = "../hipfire-arch-lfm2moe" }
+-hipfire-arch-minimax = { path = "../hipfire-arch-minimax" }
+-hipfire-arch-deepseek4 = { path = "../hipfire-arch-deepseek4" }
+-hipfire-arch-dots-ocr = { path = "../hipfire-arch-dots-ocr" }
++hipfire-arch-qwen35 = { path = "../hipfire-arch-qwen35", optional = true }
+ hipfire-detect = { path = "../hipfire-detect" }
+ hipfire-atlas = { path = "../hipfire-atlas" }
+ 
+@@ -220,11 +208,6 @@ required-features = ["arch-qwen35", "deltanet"]
+ name = "pp_parity_chatml"
+ required-features = ["arch-qwen35", "deltanet"]
+ 
+-[[example]]
+-name = "eval_hipfire_llama"
+-required-features = ["arch-llama"]
+-
+-# Tokenizer-parity helper: reads a .hfq's tokenizer + tokenizes a text slice.
+-# No GPU / arch features needed (tokenizer is pure CPU).
+ [[example]]
+ name = "tokenize_slice"
+ required-features = []

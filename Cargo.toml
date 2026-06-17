@@ -1,0 +1,104 @@
+[workspace]
+resolver = "2"
+# Only include crates we actually symlink — avoids missing dev-deps from hipfire-runtime
+members = [
+    "crates/hip-bridge",
+    "crates/rdna-compute",
+    "crates/hipfire-dispatch",
+    "crates/hipfire-quantize",
+    "crates/hipfire-detect",
+    "crates/hipfire-atlas",
+    "crates/hipfire-tui",
+    # Patched crates (avoid broken dev-deps in upstream)
+    "local-patched/hipfire-runtime",
+    "local-patched/hipfire-arch-qwen35",
+    "xtask",
+]
+
+# ── Patch section: redirect upstream crates to our patched versions ──
+# Enable after running: cargo xtask patch
+# [patch."https://github.com/Kaden-Schutt/hipfire"]
+# hip-bridge = { path = "local-patched/hip-bridge" }
+# rdna-compute = { path = "local-patched/rdna-compute" }
+# hipfire-dispatch = { path = "local-patched/hipfire-dispatch" }
+# hipfire-runtime = { path = "local-patched/hipfire-runtime" }
+# hipfire-arch-qwen35 = { path = "local-patched/hipfire-arch-qwen35" }
+# hipfire-quantize = { path = "local-patched/hipfire-quantize" }
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+# ── Profiles ──────────────────────────────────────────────────────────
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.release-lto]
+inherits = "release"
+lto = "fat"
+
+[profile.dev]
+opt-level = 0
+debug = true
+
+[profile.dev.package."*"]
+opt-level = 3  # optimize deps in dev mode for GPU kernels
+
+# ── Feature unification across workspace ──────────────────────────────
+[workspace.features]
+# Default: Qwen3.5 + DeltaNet + RDNA2 (gfx1030/1031)
+default = [
+    "hipfire-runtime/qwen35-rdna2",
+    "hipfire-arch-qwen35/deltanet",
+    "rdna-compute/deltanet",
+    "hipfire-dispatch/deltanet-rdna2",
+]
+
+# Minimal Qwen3.5 RDNA2 (no DeltaNet, no speculative)
+qwen35-rdna2-minimal = [
+    "hipfire-runtime/arch-qwen35",
+    "rdna-compute/default",
+    "hipfire-dispatch/default",
+]
+
+# ── Dependency versions (workspace-wide) ──────────────────────────────
+[workspace.dependencies]
+libloading = "0.8"
+thiserror = "2"
+memmap2 = "0.9"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+byteorder = "1"
+rayon = "1.10"
+base64 = "0.22"
+libc = "0.2"
+minijinja = { version = "2", features = ["loop_controls", "json", "preserve_order"] }
+minijinja-contrib = { version = "2", features = ["pycompat"] }
+regex = "1"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+clap = { version = "4", features = ["derive", "env"] }
+tokio = { version = "1", features = ["full"] }
+crossbeam = "0.8"
+parking_lot = "0.12"
+dashmap = "6"
+half = "2"
+bytemuck = { version = "1", features = ["derive"] }
+zerocopy = { version = "0.8", features = ["derive"] }
+
+# ── Patch file directories (for xtask) ────────────────────────────────
+# These are not Cargo config, just for our tooling
+# patches/hipfire-runtime/
+# patches/hipfire-arch-qwen35/
+# patches/rdna-compute/
+# patches/hipfire-dispatch/
+# patches/hip-bridge/
+# patches/hipfire-quantize/
+# patches/hipfire-detect/
+# patches/hipfire-atlas/
