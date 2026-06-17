@@ -6,13 +6,13 @@ Create a **minimal, focused fork of hipfire** that runs **Qwen3.5 on AMD RDNA2 (
 
 ### Why This Fork Exists
 
-| Upstream (hipfire) | This Fork (hipfire-arwaky) |
-|---------------------|----------------------------|
-| Supports 10+ architectures (gfx906–gfx1201) | **Only RDNA2 (gfx1030/1031)** |
-| 15+ architecture crates (llama, qwen2, deepseek4, dots-ocr, etc.) | **Only Qwen3.5 (hipfire-arch-qwen35)** |
-| 500k+ lines of kernel code for all arches | **Only kernels needed for gfx1030** |
-| Complex CI, many platforms | **Single target: Fedora + RX 6800 XT** |
-| Hard to debug / iterate | **Patch-on-compile: zero upstream modification** |
+| Upstream (hipfire)                                                | This Fork (hipfire-arwaky)                             |
+| ----------------------------------------------------------------- | ------------------------------------------------------ |
+| Supports 10+ architectures (gfx906–gfx1201)                      | **Only RDNA2 (gfx1030/1031)**                    |
+| 15+ architecture crates (llama, qwen2, deepseek4, dots-ocr, etc.) | **Only Qwen3.5 (hipfire-arch-qwen35)**           |
+| 500k+ lines of kernel code for all arches                         | **Only kernels needed for gfx1030**              |
+| Complex CI, many platforms                                        | **Single target: Fedora + RX 6800 XT**           |
+| Hard to debug / iterate                                           | **Patch-on-compile: zero upstream modification** |
 
 **Core philosophy**: upstream is read-only. We symlink only essential crates, patch at build time, and keep the ability to `git submodule update --remote` for upstream improvements.
 
@@ -50,17 +50,17 @@ hipfire-arwaky/
 
 ## Essential Crates (Qwen3.5 + RDNA2)
 
-| Crate | Role | Why Required |
-|-------|------|--------------|
-| `hip-bridge` | Safe FFI to `libamdhip64.so` / `libhsa-runtime64.so` via `dlopen` | Foundation — all GPU access |
-| `rdna-compute` | Kernel JIT compile, cache, dispatch for RDNA | Contains `is_gfx1030`/`is_gfx1031` atoms, MMQ/DP4A kernels |
-| `hipfire-dispatch` | Runtime ↔ rdna-compute glue | Feature `deltanet`, `from-hip-error` |
-| `hipfire-runtime` | Inference orchestrator | Feature `arch-qwen35` + `deltanet` |
-| `hipfire-arch-qwen35` | Qwen3.5 architecture impl | Forward pass, weight loading, KV, speculative decode |
-| `hipfire-quantize` | Quant format helpers | MQ3/MQ4/HFQ4 encoding/decoding |
-| `hipfire-detect` | GPU capability detection | Auto-detect gfx1030 at runtime |
-| `hipfire-atlas` | Kernel autotuning | Perf optimization for RDNA2 |
-| `hipfire-tui` | Terminal UI for config | Interactive config editor (optional) |
+| Crate                   | Role                                                                    | Why Required                                                   |
+| ----------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `hip-bridge`          | Safe FFI to `libamdhip64.so` / `libhsa-runtime64.so` via `dlopen` | Foundation — all GPU access                                   |
+| `rdna-compute`        | Kernel JIT compile, cache, dispatch for RDNA                            | Contains `is_gfx1030`/`is_gfx1031` atoms, MMQ/DP4A kernels |
+| `hipfire-dispatch`    | Runtime ↔ rdna-compute glue                                            | Feature `deltanet`, `from-hip-error`                       |
+| `hipfire-runtime`     | Inference orchestrator                                                  | Feature `arch-qwen35` + `deltanet`                         |
+| `hipfire-arch-qwen35` | Qwen3.5 architecture impl                                               | Forward pass, weight loading, KV, speculative decode           |
+| `hipfire-quantize`    | Quant format helpers                                                    | MQ3/MQ4/HFQ4 encoding/decoding                                 |
+| `hipfire-detect`      | GPU capability detection                                                | Auto-detect gfx1030 at runtime                                 |
+| `hipfire-atlas`       | Kernel autotuning                                                       | Perf optimization for RDNA2                                    |
+| `hipfire-tui`         | Terminal UI for config                                                  | Interactive config editor (optional)                           |
 
 ---
 
@@ -170,12 +170,12 @@ All entry points (`infer_qwen35`, `daemon`, `hipfire-tui`) read this same file.
 
 Upstream already provides gfx1030 kernels in `hipfire-master/kernels/src/`:
 
-| Kernel Type | Files |
-|-------------|-------|
-| GEMV HFQ4 | `gemv_hfq4g256.gfx1030.v1-v5.hip` |
+| Kernel Type      | Files                                        |
+| ---------------- | -------------------------------------------- |
+| GEMV HFQ4        | `gemv_hfq4g256.gfx1030.v1-v5.hip`          |
 | GEMM MoE Gate/Up | `gemm_gate_up_hfq4g256_mmq_x*.gfx1030.hip` |
-| GEMM QKV | `gemm_qkv_hfq4g256_mmq_x*.gfx1030.hip` |
-| GEMM HFQ3 | `gemm_*_hfq3g256_*.gfx1030.hip` |
+| GEMM QKV         | `gemm_qkv_hfq4g256_mmq_x*.gfx1030.hip`     |
+| GEMM HFQ3        | `gemm_*_hfq3g256_*.gfx1030.hip`            |
 
 These are dispatched automatically via `rdna-compute` when `ArchCaps::is_gfx1030` is true.
 
@@ -216,25 +216,25 @@ git commit -m "chore: update patches for upstream <commit-hash>"
 
 ## Directory Purpose Summary
 
-| Path | Purpose | Git Tracked? |
-|------|---------|--------------|
-| `hipfire-master/` | Upstream source (submodule) | Yes (as submodule ref) |
-| `crates/*.rs` | Symlinks to upstream crates | Yes (symlinks) |
-| `local-patched/` | Patched copies for build | **No** (gitignored) |
-| `patches/` | Version-controlled patch files | **Yes** |
-| `xtask/` | Build tooling | **Yes** |
-| `Cargo.toml` | Workspace config with `[patch]` | **Yes** |
+| Path                | Purpose                           | Git Tracked?              |
+| ------------------- | --------------------------------- | ------------------------- |
+| `hipfire-master/` | Upstream source (submodule)       | Yes (as submodule ref)    |
+| `crates/*.rs`     | Symlinks to upstream crates       | Yes (symlinks)            |
+| `local-patched/`  | Patched copies for build          | **No** (gitignored) |
+| `patches/`        | Version-controlled patch files    | **Yes**             |
+| `xtask/`          | Build tooling                     | **Yes**             |
+| `Cargo.toml`      | Workspace config with `[patch]` | **Yes**             |
 
 ---
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
-| `cannot specify features for packages outside workspace` | Add crate to `members` in `Cargo.toml` |
+| Issue                                                             | Fix                                                                                   |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `cannot specify features for packages outside workspace`        | Add crate to `members` in `Cargo.toml`                                            |
 | `failed to load manifest for dependency hipfire-arch-deepseek4` | Patch `hipfire-runtime` dev-deps (see `patches/hipfire-runtime/cargo-toml.patch`) |
-| `git apply failed` | Check patch line numbers match current upstream; regenerate with `diff -u` |
-| Kernels not found for gfx1030 | Verify `rdna-compute` feature `deltanet` enabled; check `ArchCaps::is_gfx1030` |
+| `git apply failed`                                              | Check patch line numbers match current upstream; regenerate with `diff -u`          |
+| Kernels not found for gfx1030                                     | Verify `rdna-compute` feature `deltanet` enabled; check `ArchCaps::is_gfx1030`  |
 
 ---
 
