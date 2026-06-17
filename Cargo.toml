@@ -44,22 +44,19 @@ debug = true
 [profile.dev.package."*"]
 opt-level = 3  # optimize deps in dev mode for GPU kernels
 
-# ── Feature unification across workspace ──────────────────────────────
-[workspace.features]
-# Default: Qwen3.5 + DeltaNet + RDNA2 (gfx1030/1031)
-default = [
-    "hipfire-runtime/qwen35-rdna2",
-    "hipfire-arch-qwen35/deltanet",
-    "rdna-compute/deltanet",
-    "hipfire-dispatch/deltanet-rdna2",
-]
-
-# Minimal Qwen3.5 RDNA2 (no DeltaNet, no speculative)
-qwen35-rdna2-minimal = [
-    "hipfire-runtime/arch-qwen35",
-    "rdna-compute/default",
-    "hipfire-dispatch/default",
-]
+# ── Patch section: redirect external git deps to local-patched (if needed) ──
+# Workspace members already point to local-patched/. This section redirects
+# any external dependency that references the upstream git URL.
+[patch."https://github.com/Kaden-Schutt/hipfire"]
+hip-bridge = { path = "local-patched/hip-bridge" }
+rdna-compute = { path = "local-patched/rdna-compute" }
+hipfire-dispatch = { path = "local-patched/hipfire-dispatch" }
+hipfire-runtime = { path = "local-patched/hipfire-runtime" }
+hipfire-arch-qwen35 = { path = "local-patched/hipfire-arch-qwen35" }
+hipfire-quantize = { path = "local-patched/hipfire-quantize" }
+hipfire-detect = { path = "local-patched/hipfire-detect" }
+hipfire-atlas = { path = "local-patched/hipfire-atlas" }
+hipfire-tui = { path = "local-patched/hipfire-tui" }
 
 # ── Dependency versions (workspace-wide) ──────────────────────────────
 [workspace.dependencies]
