@@ -16,26 +16,24 @@
  [dependencies]
  hip-bridge = { path = "../hip-bridge" }
  rdna-compute = { path = "../rdna-compute" }
-@@ -96,7 +91,7 @@
- # features above and `required-features` on each `[[example]]` block
+@@ -97,13 +92,6 @@
  # below.
  [dev-dependencies]
--hipfire-arch-qwen35 = { path = "../hipfire-arch-qwen35", optional = true }
-+hipfire-arch-qwen35 = { path = "../hipfire-arch-qwen35" }
+ hipfire-arch-qwen35 = { path = "../hipfire-arch-qwen35" }
+-hipfire-arch-qwen35-vl = { path = "../hipfire-arch-qwen35-vl" }
+-hipfire-arch-llama = { path = "../hipfire-arch-llama" }
+-hipfire-arch-qwen2 = { path = "../hipfire-arch-qwen2" }
+-hipfire-arch-lfm2moe = { path = "../hipfire-arch-lfm2moe" }
+-hipfire-arch-minimax = { path = "../hipfire-arch-minimax" }
+-hipfire-arch-deepseek4 = { path = "../hipfire-arch-deepseek4" }
+-hipfire-arch-dots-ocr = { path = "../hipfire-arch-dots-ocr" }
  hipfire-detect = { path = "../hipfire-detect" }
  hipfire-atlas = { path = "../hipfire-atlas" }
  
-@@ -318,17 +313,6 @@
- name = "eval_hipfire"
- required-features = ["arch-qwen35", "deltanet"]
- 
--# eval_hipfire_llama — KLD eval for llama-arch hipfire models (Qwen3 /
--# Qwen2 / Llama / Mistral / TinyLlama). Same HFKSEQ output as
--# eval_hipfire, but the forward path goes through
--# `<Llama as Architecture>` + `hipfire_runtime::llama::*` instead of
--# the qwen35 arch. Per-token scoring only — llama-arch
--# `forward_prefill_batch` doesn't expose the hidden-state capture hook
--# that eval_hipfire's prefill mode relies on.
+@@ -348,10 +336,6 @@
+ # the qwen35 arch. Per-token scoring only — llama-arch
+ # `forward_prefill_batch` doesn't expose the hidden-state capture hook
+ # that eval_hipfire's prefill mode relies on.
 -[[example]]
 -name = "eval_hipfire_llama"
 -required-features = ["arch-llama"]
