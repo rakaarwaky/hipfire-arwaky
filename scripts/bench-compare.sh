@@ -9,7 +9,7 @@ RUNS="${2:-3}"
 PROMPT="${3:-What is the capital of France?}"
 
 HIPFIRE_DIR="/home/raka/.hipfire"
-ARWAKY_DIR="$HOME/.hipfire-arwaky"
+ARWAKY_DIR="/home/raka/.hermes/profiles/linus/home/.hipfire-arwaky"
 
 HIPFIRE_MODEL="$HIPFIRE_DIR/models/$MODEL"
 ARWAKY_MODEL="$ARWAKY_DIR/models/$MODEL"
@@ -39,8 +39,8 @@ for i in $(seq 1 $RUNS); do
 
     # --- hipfire ---
     echo -n "  hipfire:   "
-    OUTPUT_H=$(echo "$PROMPT" | timeout 60 "$HIPFIRE_DIR/bin/hipfire" run "$HIPFIRE_MODEL" --temp 0.0 --max-seq 512 2>&1)
-    TOKS_H=$(echo "$OUTPUT_H" | grep -oP '[\d.]+(?= tok/s)' | tail -1)
+    OUTPUT_H=$(timeout 60 "$HIPFIRE_DIR/bin/infer" "$HIPFIRE_MODEL" --temp 0.0 --max-seq 512 --prompt "$PROMPT" --kv q8 2>&1)
+    TOKS_H=$(echo "$OUTPUT_H" | grep -oP '\([\d.]+ tok/s\)' | tail -1 | sed 's/[()]//g' | cut -d' ' -f1)
     if [ -n "$TOKS_H" ]; then
         echo "${TOKS_H} tok/s"
         RESULTS_H+=("$TOKS_H")
@@ -53,8 +53,8 @@ for i in $(seq 1 $RUNS); do
 
     # --- hipfire-arwaky ---
     echo -n "  arwaky:    "
-    OUTPUT_A=$(echo "$PROMPT" | timeout 60 "$ARWAKY_DIR/bin/hipfire-arwaky-run" "$ARWAKY_MODEL" --temp 0.0 --max-seq 512 2>&1)
-    TOKS_A=$(echo "$OUTPUT_A" | grep -oP '[\d.]+(?= tok/s)' | tail -1)
+    OUTPUT_A=$(timeout 60 "$ARWAKY_DIR/bin/hipfire-arwaky-run" "$ARWAKY_MODEL" "$PROMPT" --temp 0.0 --max-seq 512 --kv q8 2>&1)
+    TOKS_A=$(echo "$OUTPUT_A" | grep -oP '\(\d+ tokens, \d+\.?\d* tok/s\)' | tail -1 | sed -E 's/.* ([0-9]+\.[0-9]+) tok.*$/\1/')
     if [ -n "$TOKS_A" ]; then
         echo "${TOKS_A} tok/s"
         RESULTS_A+=("$TOKS_A")
