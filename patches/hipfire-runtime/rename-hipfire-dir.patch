@@ -1,7 +1,5 @@
-diff --git a/crates/hipfire-runtime/examples/daemon.rs b/crates/hipfire-runtime/examples/daemon.rs
-index dbdb436a..8b868a29 100644
---- a/crates/hipfire-runtime/examples/daemon.rs
-+++ b/crates/hipfire-runtime/examples/daemon.rs
+--- a/examples/daemon.rs	2026-06-18 16:38:38.807693510 +0700
++++ b/examples/daemon.rs	2026-06-18 16:38:45.996865285 +0700
 @@ -7,7 +7,7 @@
  //! Usage: daemon (reads JSON from stdin, writes JSON to stdout)
  //!
@@ -11,7 +9,7 @@ index dbdb436a..8b868a29 100644
  //! `FATAL: hipfire daemon already running (PID N)` before touching the GPU,
  //! preventing orphan doubles from silently double-consuming VRAM.
  //!
-@@ -188,7 +188,7 @@ struct CaskConfig {
+@@ -188,7 +188,7 @@
      fold_m: usize,
  }
  
@@ -20,7 +18,7 @@ index dbdb436a..8b868a29 100644
  ///
  /// On Unix: flock(2) is the kernel-level lock. The kernel releases it
  /// automatically on process death (including SIGKILL), so no manual
-@@ -942,8 +942,8 @@ fn acquire_daemon_lock() -> std::fs::File {
+@@ -942,8 +942,8 @@
      #[cfg(windows)]
      let home = std::env::var("USERPROFILE").expect("USERPROFILE environment variable not set");
  
@@ -31,7 +29,7 @@ index dbdb436a..8b868a29 100644
      let pid_path = hipfire_dir.join("daemon.pid");
  
      let mut f = {
-@@ -955,7 +955,7 @@ fn acquire_daemon_lock() -> std::fs::File {
+@@ -955,7 +955,7 @@
              opts.mode(0o600);
          }
          opts.open(&pid_path)
@@ -40,7 +38,7 @@ index dbdb436a..8b868a29 100644
      };
  
      #[cfg(unix)]
-@@ -3095,7 +3095,7 @@ fn main() {
+@@ -3095,7 +3095,7 @@
  ///
  ///   1. `HIPFIRE_CHAT_TEMPLATE_FILE` env var → if set and file readable,
  ///      that template wins. Operator escape hatch / debugging knob.
@@ -49,7 +47,7 @@ index dbdb436a..8b868a29 100644
  ///      where the tag is derived from the model file basename
  ///      (`qwen3.5-9b.mq4` → `qwen3.5-9b.mq4.j2`). User-controllable
  ///      override for a specific model without env-var globalness.
-@@ -3136,7 +3136,7 @@ fn resolve_chat_template(hfq: &hipfire_runtime::hfq::HfqFile, model_path: &str)
+@@ -3136,7 +3136,7 @@
          }
      }
  
@@ -58,7 +56,7 @@ index dbdb436a..8b868a29 100644
      if let Some(home) = std::env::var_os("HOME") {
          let basename = std::path::Path::new(model_path)
              .file_name()
-@@ -3144,7 +3144,7 @@ fn resolve_chat_template(hfq: &hipfire_runtime::hfq::HfqFile, model_path: &str)
+@@ -3144,7 +3144,7 @@
              .unwrap_or("");
          if !basename.is_empty() {
              let per_model = std::path::Path::new(&home)

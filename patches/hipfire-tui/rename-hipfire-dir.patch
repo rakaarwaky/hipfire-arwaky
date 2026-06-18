@@ -1,8 +1,6 @@
-diff --git a/crates/hipfire-tui/src/hipfire/mod.rs b/crates/hipfire-tui/src/hipfire/mod.rs
-index cb1a2f23..997b6bdb 100644
---- a/crates/hipfire-tui/src/hipfire/mod.rs
-+++ b/crates/hipfire-tui/src/hipfire/mod.rs
-@@ -28,7 +28,7 @@ impl HipfirePaths {
+--- a/src/hipfire/mod.rs	2026-06-18 16:38:22.273524502 +0700
++++ b/src/hipfire/mod.rs	2026-06-18 16:38:22.275924465 +0700
+@@ -28,7 +28,7 @@
          let home = env::var_os("HOME")
              .map(PathBuf::from)
              .unwrap_or_else(|| PathBuf::from("."));
@@ -11,11 +9,10 @@ index cb1a2f23..997b6bdb 100644
          let cwd = env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
          Self {
              models: root.join("models"),
-diff --git a/crates/hipfire-tui/src/hipfire/status.rs b/crates/hipfire-tui/src/hipfire/status.rs
-index ea521b96..62c9c9b6 100644
---- a/crates/hipfire-tui/src/hipfire/status.rs
-+++ b/crates/hipfire-tui/src/hipfire/status.rs
-@@ -33,7 +33,7 @@ impl StatusState {
+
+--- a/src/hipfire/status.rs	2026-06-18 16:38:22.273562022 +0700
++++ b/src/hipfire/status.rs	2026-06-18 16:38:22.277856298 +0700
+@@ -33,7 +33,7 @@
          let (serve_http_ok, health_text) = probe_health(config);
          let gpu_lines = detect_gpu_lines();
          let paths_ok = vec![
@@ -24,11 +21,10 @@ index ea521b96..62c9c9b6 100644
              ("models".into(), paths.models.exists()),
              ("config.json".into(), paths.config.exists()),
              (
-diff --git a/crates/hipfire-tui/src/ui.rs b/crates/hipfire-tui/src/ui.rs
-index 1b935cdd..6a7c9316 100644
---- a/crates/hipfire-tui/src/ui.rs
-+++ b/crates/hipfire-tui/src/ui.rs
-@@ -575,7 +575,7 @@ fn draw_system(frame: &mut Frame, app: &App, area: Rect) {
+
+--- a/src/ui.rs	2026-06-18 16:38:22.273637754 +0700
++++ b/src/ui.rs	2026-06-18 16:38:22.279164823 +0700
+@@ -575,7 +575,7 @@
          )),
      ];
      if app.registry.local_files.is_empty() {
