@@ -1,5 +1,5 @@
---- crates/hipfire-runtime/Cargo.toml	2026-06-18 04:26:38.233863170 +0700
-+++ local-patched/hipfire-runtime/Cargo.toml	2026-06-18 04:37:50.817968670 +0700
+--- a/Cargo.toml
++++ b/Cargo.toml
 @@ -40,18 +40,14 @@
  # block below) which serves both as documentation of which features
  # each example needs and as the gate for downstream library consumers

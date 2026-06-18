@@ -1,0 +1,14 @@
+--- a/src/rocblas.rs
++++ b/src/rocblas.rs
+@@ -61,7 +61,7 @@
+ #[derive(Debug, Clone, Copy)]
+ pub enum RocblasGemmAlgo {
+     Standard = 160,
+-    SolutionIndex = 161,
++    _SolutionIndex = 161,
+ }
+ 
+ type RocblasHandle = *mut c_void;
+ 
+ /// Loaded rocBLAS library + resolved function pointers.
+ pub struct Rocblas {

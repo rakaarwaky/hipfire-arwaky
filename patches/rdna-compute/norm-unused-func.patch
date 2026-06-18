@@ -1,0 +1,18 @@
+--- a/src/norm.rs
++++ b/src/norm.rs
+@@ -357,7 +357,7 @@
+         self.bind_thread()?;
+         self.ensure_kernel("rope", kernels::ROPE_SRC, "rope_f32")?;
+-        let func = &self.functions["rope_f32"];
++        let _func = &self.functions["rope_f32"];
+ 
+         let q_ptr = q.buf.as_ptr();
+         let k_ptr = k.buf.as_ptr();
+@@ -2285,7 +2285,7 @@
+         self.bind_thread()?;
+         self.ensure_kernel("bias_add_f32", kernels::BIAS_ADD_SRC, "bias_add_f32")?;
+-        let func = &self.functions["bias_add_f32"];
++        let _func = &self.functions["bias_add_f32"];
+         let xp = x.buf.as_ptr();
+         let bp = bias.buf.as_ptr();
+         let ni = n as i32;

@@ -1,0 +1,61 @@
+--- a/src/tests.rs
++++ b/src/tests.rs
+@@ -752,7 +752,7 @@
+ 
+ use crate::pipeline::steps::{
+     guard_qkv_mq4g256lloyd, guard_qkv_mq3g256lloyd,
+     guard_qkv_hfq4g256, guard_qkv_hfq6g256,
+-    guard_gate_up_mq4g256lloyd, guard_gate_up_mq3g256lloyd,
+-    guard_gate_up_hfq4g256, guard_gate_up_hfq6g256,
++    // guard_gate_up_mq4g256lloyd, guard_gate_up_mq3g256lloyd,  // unused
++    // guard_gate_up_hfq4g256, guard_gate_up_hfq6g256,  // unused
+ };
+ 
+ fn make_qkv3_steps<'a>(
+@@ -69,7 +69,7 @@
+     }
+ }
+ 
+-fn dp4a_variant(key: KernelKey) -> KernelVariant {
++// fn dp4a_variant(key: KernelKey) -> KernelVariant {  // dead code, remove
++//     KernelVariant {
++//         key,
++//         arch_required: ArchPredicate::HasDot2F32F16,
++//         shape_gate: None,
++//         steps: &[],
++//         has_awq: false,
++//         tile: TileImpl::None,
++//     }
++// }
+ 
+ // ── ShapePredicate::eval ──────────────────────────────────────────────────────
+ 
+@@ -228,7 +228,7 @@
+ fn registry_resolve_unregistered_key_returns_not_found() {
+     let mut reg = KernelRegistry::new();
+     let ctx = ctx_rdna1();
+-    let err = reg.resolve(KernelKey::GemvF32, &ctx, None).unwrap_err();
++    let _err = reg.resolve(KernelKey::GemvF32, &ctx, None).unwrap_err();
+     assert!(matches!(_err, DispatchError::NotFound { .. }));
+ }
+ 
+@@ -239,7 +239,7 @@
+ fn registry_resolve_arch_gate_fails_returns_missing_impl() {
+     let mut reg = KernelRegistry::new();
+     reg.register(has_wmma_variant(KernelKey::GemmHfq4G256Wmma));
+     let ctx = ctx_rdna1(); // no WMMA
+-    let err = reg.resolve(KernelKey::GemmHfq4G256Wmma, &ctx, None).unwrap_err();
++    let _err = reg.resolve(KernelKey::GemmHfq4G256Wmma, &ctx, None).unwrap_err();
+     assert!(matches!(_err, DispatchError::MissingImpl { .. }));
+ }
+ 
+@@ -247,7 +247,7 @@
+ fn registry_resolve_arch_gate_passes_on_capable_arch() {
+     let mut reg = KernelRegistry::new();
+     reg.register(has_wmma_variant(KernelKey::GemmHfq4G256Wmma));
+     let ctx = ctx_rdna3(); // has WMMA w32
+-    assert_eq!(
++    let _ = assert_eq!(
+         reg.resolve(KernelKey::GemmHfq4G256Wmma, &ctx, None).unwrap().key,
+         KernelKey::GemmHfq4G256Wmma,
+     );

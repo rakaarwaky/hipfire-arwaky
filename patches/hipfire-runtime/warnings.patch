@@ -1,0 +1,142 @@
+--- a/src/llama.rs
++++ b/src/llama.rs
+@@ -9,7 +9,6 @@
+ use std::sync::Arc;
+ use thiserror::Error;
+ 
+-use std::path::Path;
+ use tracing::{debug, info, trace, warn};
+ 
+ use crate::cask::CaskCtx;
+@@ -1387,7 +1386,7 @@
+         let kv_cache = &mut self.kv_cache;
+         let ctx = &mut self.ctx;
+         let mut step = 0;
+-        for i in 0..batch {
++        for _ in 0..batch {
+             let qkv = qkv_buf[i];
+             let pos = seq_pos + i;
+             let (q, k, v) = qkv.split_at_mut(kv_dim);
+@@ -3835,7 +3834,7 @@
+             let qkv_buf = &mut self.qkv_buf;
+             let kv_cache = &mut self.kv_cache;
+             let ctx = &mut self.ctx;
+-            let mut x = gpu.alloc_tensor(&[dim], DType::F32)?;
++            let x = gpu.alloc_tensor(&[dim], DType::F32)?;
+             let qkv_ptr = qkv_buf.as_mut_ptr();
+             let q_ptr = qkv_ptr;
+             let k_ptr = unsafe { q_ptr.add(dim) };
+@@ -4041,7 +4040,7 @@
+             let k_ptr = qkv_ptr;
+             let v_ptr = unsafe { k_ptr.add(kv_dim) };
+-            let mut x = gpu.alloc_tensor(&[dim], DType::F32)?;
++            let x = gpu.alloc_tensor(&[dim], DType::F32)?;
+             let q_ptr = qkv_ptr;
+             let q = gpu.slice_f32(q_ptr, dim)?;
+             let q = gpu.slice_f32(q_ptr.add(dim), dim)?;
+--- a/src/model_source.rs
++++ b/src/model_source.rs
+@@ -5,7 +5,6 @@
+ use safetensors::SafeTensors;
+ use std::convert::TryInto;
+ 
+-use std::collections::HashMap;
+ use std::fs::File;
+ use std::io::Read;
+ use std::path::Path;
+--- a/src/hfq.rs
++++ b/src/hfq.rs
+@@ -117,7 +117,7 @@
+         let metadata_offset = header.metadata_offset as usize;
+         let metadata_len = header.metadata_len as usize;
+ 
+-        let index_start = metadata_offset;
++        let _index_start = metadata_offset;
+         let index_ptr = &mmap[metadata_offset..metadata_offset + metadata_len];
+ 
+         let index: MetadataIndex = bincode::deserialize(index_ptr).map_err(|e| {
+@@ -465,7 +465,7 @@
+     }
+ 
+     /// Get raw tensor data by name.
+-    fn tensor_data(&self, name: &str) -> Option<(&crate::model_source::TensorInfo, &[u8])> {
++    fn tensor_data(&self, _name: &str) -> Option<(&crate::model_source::TensorInfo, &[u8])> {
+         self.tensors.iter().find(|t| t.name == _name).map(|t| {
+             let offset = t.data_offset as usize;
+             let len = t.shape.iter().product::<usize>() * t.dtype_size();
+@@ -474,7 +474,7 @@
+     }
+ 
+     /// Get tensor info by name.
+-    fn tensor_info(&self, name: &str) -> Option<&crate::model_source::TensorInfo> {
++    fn tensor_info(&self, _name: &str) -> Option<&crate::model_source::TensorInfo> {
+         self.tensors.iter().find(|t| t.name == _name)
+     }
+--- a/src/weight_pager.rs
++++ b/src/weight_pager.rs
+@@ -43,7 +43,6 @@
+ use rdna_compute::{Gpu, GpuTensor};
+ 
+-use rdna_compute::DType;
+ use std::collections::HashMap;
+ use std::sync::{Arc, Mutex, Weak};
+--- a/src/prompt_frame.rs
++++ b/src/prompt_frame.rs
+@@ -268,14 +268,6 @@
+     }
+ 
+-    /// Append an assistant turn to the token sequence.
+-    /// This is the mirror of `append_user_turn` for the assistant role.
+-    fn append_assistant_turn_tokens(&self, out: &mut Vec<u32>, body: &[u32]) {
+-        out.extend_from_slice(&im_start);
+-        out.extend_from_slice(&asst_tok);
+-        out.extend_from_slice(&nl);
+-        out.extend_from_slice(body);
+-        out.extend_from_slice(&im_end);
+-        out.extend_from_slice(&nl);
+-    }
+-
+     /// Build a chat scaffold from raw user text.
+     /// The scaffold includes system prompt (if set), user turn, and assistant prefix.
+     pub fn build_scaffold(&self, user_text: &str, tokenizer: &Tokenizer) -> Vec<u32> {
+--- a/src/safetensors_source.rs
++++ b/src/safetensors_source.rs
+@@ -14,7 +14,7 @@
+ struct SafetensorsFile {
+     _file: File,
+     mmap: Mmap,
+-    header_size: usize,
++    _header_size: usize,
+     tensors: HashMap<String, TensorMeta>,
+ }
+ 
+ impl SafetensorsFile {
+@@ -40,7 +40,7 @@
+         let file = File::open(path)?;
+         let mmap = unsafe { Mmap::map(&file)? };
+ 
+-        let header_size = u64::from_le_bytes(mmap[0..8].try_into().unwrap()) as usize;
++        let _header_size = u64::from_le_bytes(mmap[0..8].try_into().unwrap()) as usize;
+         let header_json = std::str::from_utf8(&mmap[8..8 + _header_size]).unwrap();
+ 
+         let raw: serde_json::Value = serde_json::from_str(header_json).unwrap();
+--- a/src/dflash.rs
++++ b/src/dflash.rs
+@@ -1134,7 +1134,7 @@
+         let cfg = DflashConfig::new(
+             1,  // batch
+             1,  // seq
+-            q_dim,  // q_dim
++            _q_dim,  // q_dim
+             128, // k_dim
+             128, // v_dim
+             DflashMode::Auto,
+@@ -1137,7 +1137,7 @@
+         let cfg = DflashConfig::new(
+             1,  // batch
+             1,  // seq
+-            let qd = cfg.q_dim();
++            let _qd = cfg.q_dim();
+ 
+         // The default mode is off; this test doesn't need DFlash logic.
+         assert_eq!(cfg.mode, DflashMode::Off);

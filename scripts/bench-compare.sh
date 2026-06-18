@@ -40,7 +40,7 @@ for i in $(seq 1 $RUNS); do
     # --- hipfire ---
     echo -n "  hipfire:   "
     OUTPUT_H=$(timeout 60 "$HIPFIRE_DIR/bin/infer" "$HIPFIRE_MODEL" --temp 0.0 --max-seq 512 --prompt "$PROMPT" --kv q8 2>&1)
-    TOKS_H=$(echo "$OUTPUT_H" | grep -oP '\([\d.]+ tok/s\)' | tail -1 | sed 's/[()]//g' | cut -d' ' -f1)
+    TOKS_H=$(echo "$OUTPUT_H" | grep -oP '=== Done: \d+ tokens in \d+ms \([\d.]+ tok/s\) ===' | tail -1 | sed -E 's/.* \(([0-9]+\.[0-9]+) tok\/s\) ===.*/\1/')
     if [ -n "$TOKS_H" ]; then
         echo "${TOKS_H} tok/s"
         RESULTS_H+=("$TOKS_H")

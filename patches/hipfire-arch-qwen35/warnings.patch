@@ -1,0 +1,234 @@
+--- a/src/qwen35.rs
++++ b/src/qwen35.rs
+@@ -8012,15 +8012,15 @@
+     // kv_cache's own table (single-GPU). Held as macros, not top-level
+     // bindings, so the immutable borrow on `kv_cache.givens_*` doesn't
+     // outlive the kernel-call statement and conflict with later
+     // mutable borrows of `kv_cache` (e.g. inside `run_fa_layer_body`).
+-    macro_rules! givens_cos_view {
+-        () => {
+-            band.and_then(|b| b.givens_cos)
+-                .or(kv_cache.givens_cos.as_ref())
+-        };
+-    }
+-    macro_rules! givens_sin_view {
+-        () => {
+-            band.and_then(|b| b.givens_sin)
+-                .or(kv_cache.givens_sin.as_ref())
+-        };
+-    }
++//    macro_rules! givens_cos_view {
++//        () => {
++//            band.and_then(|b| b.givens_cos)
++//                .or(kv_cache.givens_cos.as_ref())
++//        };
++//    }
++//    macro_rules! givens_sin_view {
++//        () => {
++//            band.and_then(|b| b.givens_sin)
++//                .or(kv_cache.givens_sin.as_ref())
++//        };
++//    }
+ 
+     // ── 1. Embed tokens into pbs.x_batch ─────────────────────────────────
+@@ -7986,7 +7986,7 @@
+     // band givens tables (for the "use band givens" fallback mode where
+     // `kv_cache.givens_*` is `None` by design) or the kv_cache's own
+     // table (single-GPU).
+-    let ctx = hipfire_dispatch::context::DispatchCtx::new(gpu);
++    let _ctx = hipfire_dispatch::context::DispatchCtx::new(gpu);
+ 
+     // Scope bandwidth computation (GTID 0) + pbs upload (GTID 1) pilot.
+     // If bandwidth < 1.0 bytes/cycle, skip the band kernels and fall back
+@@ -9179,7 +9179,7 @@
+         }
+     }
+ 
+-    let q_dim = config.n_heads * config.head_dim;
++    let _q_dim = config.n_heads * config.head_dim;
+     let layer_kv_dim = config.n_kv_heads * config.head_dim;
+ 
+     // Pre-allocate a buffer to hold the concatenated QKV for each layer.
+@@ -11318,7 +11318,7 @@
+             false => false,
+         };
+ 
+-    let fused_fa3_lloyd_mq4 = fa3_same_dtype && dt == DType::MQ4G256Lloyd;
++    let _fused_fa3_lloyd_mq4 = fa3_same_dtype && dt == DType::MQ4G256Lloyd;
+     let fused_la4_lloyd_mq4 = la4_same_dtype && dt == DType::MQ4G256Lloyd;
+ 
+     let mut main_chan = channel;
+@@ -11417,7 +11417,7 @@
+     }
+ 
+-    let kv_dim = config.n_kv_heads * config.head_dim;
++    let _kv_dim = config.n_kv_heads * config.head_dim;
+     let total_qkv = config.n_heads * config.head_dim * 3;
+ 
+     // Allocate combined QKV buffer for this layer.
+@@ -11798,14 +11798,14 @@
+         }
+     }
+ 
+-    let mut kv_layer_idx = 0usize;
++    let _kv_layer_idx = 0usize;
+     for layer_idx in 0..config.n_layers {
+         let layer_type = config.layer_types[layer_idx];
+         let is_fa = matches!(layer_type, LayerType::FullAttn);
+ 
+         // Skip KV-band for FA layers (they don't participate in linear attention).
+         if is_fa {
+-            kv_layer_idx += 1;
++            // kv_layer_idx += 1;
+             continue;
+         }
+@@ -11998,7 +11998,7 @@
+             }
+         }
+ 
+-        kv_layer_idx += 1;
++        // kv_layer_idx += 1;
+     }
+ 
+     // Run the actual generation loop.
+@@ -12002,7 +12002,7 @@
+     }
+ 
+-        kv_layer_idx += 1;
++        // kv_layer_idx += 1;
+     }
+ 
+     // Run the actual generation loop.
+@@ -13504,7 +13504,7 @@
+             false => false,
+         };
+ 
+-    let fused_la4_lloyd_mq4 = la4_same_dtype && dt == DType::MQ4G256Lloyd;
++    let _fused_la4_lloyd_mq4 = la4_same_dtype && dt == DType::MQ4G256Lloyd;
+     let fused_gu_lloyd_mq4 = same_dtype && dt_g == DType::MQ4G256Lloyd;
+ 
+     let mut main_chan = channel;
+@@ -13665,7 +13665,7 @@
+             false => false,
+         };
+ 
+-    let fused_gu_lloyd_mq4 = same_dtype && dt_g == DType::MQ4G256Lloyd;
++    let _fused_gu_lloyd_mq4 = same_dtype && dt_g == DType::MQ4G256Lloyd;
+     let fused_fa3_lloyd_mq4 = fa3_same_dtype && dt == DType::MQ4G256Lloyd;
+ 
+     let mut main_chan = channel;
+@@ -13727,7 +13727,7 @@
+             false => false,
+         };
+ 
+-    let fused_fa3_lloyd_mq4 = fa3_same_dtype && dt == DType::MQ4G256Lloyd;
++    let _fused_fa3_lloyd_mq4 = fa3_same_dtype && dt == DType::MQ4G256Lloyd;
+     let fused_la4_lloyd_mq4 = la4_same_dtype && dt == DType::MQ4G256Lloyd;
+ 
+     let mut main_chan = channel;
+@@ -14092,7 +14092,7 @@
+             false => false,
+         };
+ 
+-    let fused_gu_lloyd_mq4 = same_dtype && dt_g == DType::MQ4G256Lloyd;
++    let _fused_gu_lloyd_mq4 = same_dtype && dt_g == DType::MQ4G256Lloyd;
+     let fused_la4_lloyd_mq4 = la4_same_dtype && dt == DType::MQ4G256Lloyd;
+ 
+     let mut main_chan = channel;
+@@ -14155,7 +14155,7 @@
+             false => false,
+         };
+ 
+-    let fused_la4_lloyd_mq4 = la4_same_dtype && dt == DType::MQ4G256Lloyd;
++    let _fused_la4_lloyd_mq4 = la4_same_dtype && dt == DType::MQ4G256Lloyd;
+     let fused_fa3_lloyd_mq4 = fa3_same_dtype && dt == DType::MQ4G256Lloyd;
+ 
+     let mut main_chan = channel.
+@@ -14335,7 +14335,7 @@
+             false => false,
+         };
+ 
+-    let fused_fa3_lloyd_mq4 = fa3_same_dtype && dt == DType::MQ4G256Lloyd;
++    let _fused_fa3_lloyd_mq4 = fa3_same_dtype && dt == DType::MQ4G256Lloyd;
+     let fused_la4_lloyd_mq4 = la4_same_dtype && dt == DType::MQ4G256Lloyd;
+ 
+     let mut main_chan = channel.
+--- a/src/speculative.rs
++++ b/src/speculative.rs
+@@ -2999,7 +2999,7 @@
+     if phase_on {
+         gpu.hip.device_synchronize()?;
+     }
+     let t_spec_start = std::time::Instant::now();
+-    let mut t_phase = t_spec_start;
++    let _t_phase = t_spec_start;
+ 
+     // ── 1. block_output_ids seeded with prev bonus at [0], masks at [1..B] ──
+     let mut block: Vec<u32> = vec![mask_token; b];
+--- a/src/qwen35.rs
++++ b/src/qwen35.rs
+@@ -1199,12 +1199,12 @@
+ 
+ // Dead code — kept for reference, not compiled
+-// fn load_norm_weight_raw(
+-//     gpu: &mut rdna_compute::Gpu,
+-//     name: &str,
+-//     mmap: &Mmap,
+-//     meta: &TensorMeta,
+-// ) -> HipResult<rdna_compute::GpuTensor> {
+//     // ... implementation ...
+-// }
++// fn load_norm_weight_raw(
++//     gpu: &mut rdna_compute::Gpu,
++//     name: &str,
++//     mmap: &Mmap,
++//     meta: &TensorMeta,
++// ) -> HipResult<rdna_compute::GpuTensor> {
++//     // ... implementation ...
++// }
+ 
+ // ─── Weight Loading: Slice Views ──────────────────────────────────────────
+ 
+ // Dead code — kept for reference
+-// fn slice_f32_view(src: &GpuTensor, offset_elems: usize, len_elems: usize) -> GpuTensor {
+-//     // ... implementation ...
+-// }
++// fn slice_f32_view(src: &GpuTensor, offset_elems: usize, len_elems: usize) -> GpuTensor {
++//     // ... implementation ...
++// }
+ 
+ // ─── MoE FFN Decode (dead code) ───────────────────────────────────────────
+ 
+ // Dead code — MoE not used in Qwen3.5 (dense only)
+-// fn moe_ffn_decode(
+-//     gpu: &mut rdna_compute::Gpu,
+-//     layer: &mut LayerWeights,
+-//     x: &GpuTensor,
+-//     config: &Qwen35Config,
+-//     scratch: &mut Qwen35ScratchSet,
+-//     dn_state: &mut DeltaNetState,
+-//     layer_idx: usize,
+-// ) -> HipResult<()> {
+-//     // ... implementation ...
+-// }
++// fn moe_ffn_decode(
++//     gpu: &mut rdna_compute::Gpu,
++//     layer: &mut LayerWeights,
++//     x: &GpuTensor,
++//     config: &Qwen35Config,
++//     scratch: &mut Qwen35ScratchSet,
++//     dn_state: &mut DeltaNetState,
++//     layer_idx: usize,
++// ) -> HipResult<()> {
++//     // ... implementation ...
++// }
+ 
+ // ─── PrefillBandCtx: unused fields ────────────────────────────────────────
+ 
+ // givens_cos and givens_sin are never read — dead code
+-    pub givens_cos: Option<&'a GpuTensor>,
+-    pub givens_sin: Option<&'a GpuTensor>,
++    pub _givens_cos: Option<&'a GpuTensor>,
++    pub _givens_sin: Option<&'a GpuTensor>,
+ 
+ }

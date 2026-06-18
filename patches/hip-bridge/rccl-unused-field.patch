@@ -1,0 +1,22 @@
+--- a/src/rccl.rs
++++ b/src/rccl.rs
+@@ -75,7 +75,7 @@
+     _lib: Library,
+     comms: Vec<NcclComm>,
+ 
+-    fn_comm_init_all: unsafe extern "C" fn(*mut NcclComm, c_int, *const c_int) -> u32,
++    _fn_comm_init_all: unsafe extern "C" fn(*mut NcclComm, c_int, *const c_int) -> u32,
+     fn_comm_destroy: unsafe extern "C" fn(NcclComm) -> u32,
+     fn_all_reduce: unsafe extern "C" fn(
+         *const c_void, // sendbuff
+         *mut c_void,   // recvbuff
+         usize,         // count
+         u32,           // datatype
+         u32,           // op
+         NcclComm,      // comm
+         *mut c_void,   // hipStream_t
+     ) -> u32,
+     fn_group_start: unsafe extern "C" fn() -> u32,
+     fn_group_end: unsafe extern "C" fn() -> u32,
+     fn_get_error_string: unsafe extern "C" fn(u32) -> *const c_char,
+     fn_get_version: unsafe extern "C" fn(*mut c_int) -> u32,

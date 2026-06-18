@@ -1,0 +1,16 @@
+--- a/src/kernels.rs
++++ b/src/kernels.rs
+@@ -3768,7 +3768,7 @@
+                         "gfx1100" | "gfx1101" | "gfx1102" | "gfx1151" => {
+-                            let (src, mod_name) = gemm_mq4g256_lloyd_residual_wmma_for_arch(&caps);
++                            let (_src, mod_name) = gemm_mq4g256_lloyd_residual_wmma_for_arch(&caps);
+                             assert!(mod_name.contains("rdna3"), "{arch}: expected rdna3, got {mod_name}");
+                         }
+                         _ => {
+@@ -3771,7 +3771,7 @@
+                         "gfx1200" | "gfx1201" => {
+-                            let (src, mod_name) = gemm_mq4g256_lloyd_residual_wmma_for_arch(&caps);
++                            let (_src, mod_name) = gemm_mq4g256_lloyd_residual_wmma_for_arch(&caps);
+                             assert!(mod_name.contains("rdna4"), "{arch}: expected rdna4, got {mod_name}");
+                         }
+                         _ => {

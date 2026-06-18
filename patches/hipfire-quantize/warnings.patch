@@ -1,0 +1,174 @@
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -65,8 +65,6 @@
+ // ─── Safetensors Parser ─────────────────────────────────────────────────────
+ 
+-#[derive(Debug, Clone, serde::Deserialize)]
+-struct SafetensorsMeta {
+-    #[serde(flatten)]
+-    tensors: HashMap<String, TensorMeta>,
+-}
+-
+-#[derive(Debug, Clone, serde::Deserialize)]
+-struct TensorMeta {
+-    dtype: String,
+-    shape: Vec<usize>,
+-    data_offsets: [usize; 2],
+-}
+-
+-struct SafetensorsFile {
+-    _file: File,
+-    mmap: Mmap,
+-    header_size: usize,
+-    tensors: HashMap<String, TensorMeta>,
++// Dead code — SafetensorsMeta and TensorMeta not used (replaced by direct parsing)
++// #[derive(Debug, Clone, serde::Deserialize)]
++// struct SafetensorsMeta {
++//     #[serde(flatten)]
++//     tensors: HashMap<String, TensorMeta>,
++// }
++//
++// #[derive(Debug, Clone, serde::Deserialize)]
++// struct TensorMeta {
++//     dtype: String,
++//     shape: Vec<usize>,
++//     data_offsets: [usize; 2],
++// }
++//
++// struct SafetensorsFile {
++//     _file: File,
++//     mmap: Mmap,
++//     header_size: usize,
++//     tensors: HashMap<String, TensorMeta>,
+ }
+ 
+ impl SafetensorsFile {
+@@ -3070,14 +3068,14 @@
+     PARO4G128T = 29,
+ }
+ 
+-// Dead code variants
+-const _PARO4G128_DUMMY: QuantType = QuantType::PARO4G128;
+-const _PARO4G128T_DUMMY: QuantType = QuantType::PARO4G128T;
++// PARO4G128 and PARO4G128T are never constructed — dead code
++// Use prefix to silence warning
++#[allow(dead_code)]
++const _PARO4G128_DUMMY: QuantType = QuantType::PARO4G128;
++#[allow(dead_code)]
++const _PARO4G128T_DUMMY: QuantType = QuantType::PARO4G128T;
+ 
+ // ─── Main Quantization Loop ──────────────────────────────────────────────────
+ 
+// Dead code functions
+-fn default_promote_target(_: QuantType) -> QuantType {
+-    QuantType::F16
+-}
++// fn default_promote_target(_: QuantType) -> QuantType {
++//     QuantType::F16
++// }
+ 
+-fn is_promote_pair_supported(_: QuantType, _: QuantType) -> bool {
+-    false
+-}
++// fn is_promote_pair_supported(_: QuantType, _: QuantType) -> bool {
++//     false
++// }
+ 
+-fn kmap_resolve(_: &str) -> Option<&str> {
+-    None
+-}
++// fn kmap_resolve(_: &str) -> Option<&str> {
++//     None
++// }
+ 
+ // ─── Quantization Implementations ────────────────────────────────────────────
+ 
+@@ -4481,14 +4479,14 @@
+     }
+ }
+ 
+-// Unreachable patterns — the match covers all valid QuantType
+-// Use #[allow] to silence
++// The following match arms are unreachable due to exhaustive match above
++// but kept for future format extensibility
+ 
+-        QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
+-        QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
++        // QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
++        // QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
+ 
+-        QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
+-        QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
++        // QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
++        // QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
+ 
+-        QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
+-        QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
++        // QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
++        // QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
+ 
+-        QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
+-        QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
++        // QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
++        // QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
+ 
+-        QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
+-        QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
++        // QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
++        // QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
+ 
+-        QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
+-        QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
++        // QuantType::PARO4G128 => unreachable!("PARO4G128 not supported"),
++        // QuantType::PARO4G128T => unreachable!("PARO4G128T not supported"),
+ 
+ // ─── GGUF Input ──────────────────────────────────────────────────────────────
+ 
+--- a/src/gguf_input.rs
++++ b/src/gguf_input.rs
+@@ -117,7 +117,7 @@
+         }
+     }
+ 
+-    fn as_f32(&self) -> Option<f32> {
++    fn _as_f32(&self) -> Option<f32> {
+         match self {
+             MetadataValue::F32(v) => Some(*v),
+             _ => None,
+@@ -233,7 +233,7 @@
+         }
+     }
+ 
+-    fn meta_u32(&self, key: &str) -> Option<u32> {
++    fn _meta_u32(&self, key: &str) -> Option<u32> {
+         self.metadata
+             .get(key)
+             .and_then(|v| match v {
+@@ -236,7 +236,7 @@
+             _ => None,
+         })
+     }
+ 
+-    fn meta_f32(&self, key: &str) -> Option<f32> {
++    fn _meta_f32(&self, key: &str) -> Option<f32> {
+         self.metadata
+             .get(key)
+             .and_then(|v| match v {
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -8690,7 +8690,7 @@
+ 
+ /// Container for rotated weight + sidecar scales.
+ #[derive(Debug)]
+-pub struct RotatedWeightWithScales {
++pub struct RotatedWeightWithScales_ {
+     /// The rotated weight tensor (FWHT applied).
+     pub weight: GpuTensor,
+     /// Per-input-channel AWQ scales (if AWQ was applied).
+@@ -8693,7 +8693,7 @@
+     /// Per-output-channel AWQ scales.
+     pub awq_scale_out: Option<GpuTensor>,
+-    shape: Vec<usize>,
++    _shape: Vec<usize>,
+ 
+     impl RotatedWeightWithScales {

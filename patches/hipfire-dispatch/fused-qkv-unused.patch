@@ -1,0 +1,12 @@
+--- a/src/families/fused_qkv.rs
++++ b/src/families/fused_qkv.rs
+@@ -375,7 +375,7 @@
+             let [w_gate, w_up] = <[&GpuTensor; 2]>::try_from(params.weights).map_err(|_| err_wrong_arity(params.kind, 2))?;
+             let [gate, up] = <[&GpuTensor; 2]>::try_from(params.outputs).map_err(|_| err_wrong_arity(params.kind, 2))?;
+             let [mg, mu] = <[usize; 2]>::try_from(params.m).map_err(|_| err_wrong_arity(params.kind, 2))?;
+-            let rs = params.rot_scratch;
++            let _rs = params.rot_scratch;
++            let _mu = mu;
+             assert!(_rs.len() >= 1, "FusedGateUpParo4G128T needs >= 1 rotation scratch buffer, got {}", _rs.len());
+             assert!(mg % 8 == 0 && k % 128 == 0,
+                 "FusedGateUpParo4G128T requires m%8==0 and k%128==0, got m={} k={}", mg, k);

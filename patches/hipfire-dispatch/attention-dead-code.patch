@@ -1,0 +1,63 @@
+--- a/src/families/attention.rs
++++ b/src/families/attention.rs
+@@ -704,14 +704,14 @@
+ 
+ /// All `KernelKey` variants handled by `dispatch_kv_write`.
+ /// If you add a new KV write key and forget to add a dispatch arm, the
+ /// completeness test will fail.
+-pub(crate) const DISPATCHED_KV_WRITE_KEYS: &[KernelKey] = &[
++pub(crate) const _DISPATCHED_KV_WRITE_KEYS: &[KernelKey] = &[
+     // Single-token
+     KernelKey::KvWriteF32,
+     KernelKey::KvWriteQ8_0,
+     KernelKey::KvWriteAsym4,
+     KernelKey::KvWriteAsym4Fwht,
+     KernelKey::KvWriteAsym3,
+     KernelKey::KvWriteAsym3Fwht,
+     KernelKey::KvWriteAsym2,
+     KernelKey::KvWriteAsym2Fwht,
+     // Batched
+     KernelKey::KvWriteAsym4Batched,
+     KernelKey::KvWriteAsym4FwhtBatched,
+     KernelKey::KvWriteAsym3Batched,
+     KernelKey::KvWriteAsym3FwhtBatched,
+     KernelKey::KvWriteAsym2Batched,
+     KernelKey::KvWriteAsym2FwhtBatched,
+     KernelKey::KvWriteQ8_0Batched,
+     // Llama legacy
+     KernelKey::KvWriteHfq4,
+     KernelKey::KvWriteQ4,
+ ];
+ 
+ /// All `KernelKey` variants handled by `dispatch_attend`.
+-pub(crate) const DISPATCHED_ATTEND_KEYS: &[KernelKey] = &[
++pub(crate) const _DISPATCHED_ATTEND_KEYS: &[KernelKey] = &[
+     // Single-token
+     KernelKey::AttnF32,
+     KernelKey::AttnFlashQ8_0,
+     KernelKey::AttnQ8_0Kv,
+     KernelKey::AttnFlashAsym4,
+     KernelKey::AttnFlashAsym4Fwht,
+     KernelKey::AttnFlashAsym3,
+     KernelKey::AttnFlashAsym3Fwht,
+     KernelKey::AttnFlashAsym2,
+     KernelKey::AttnFlashAsym2Fwht,
+     KernelKey::AttnGqaFused,
+     // Batched
+     KernelKey::AttnFlashAsym4BatchedMasked,
+     KernelKey::AttnFlashAsym4FwhtBatchedMasked,
+     KernelKey::AttnFlashAsym3BatchedMasked,
+     KernelKey::AttnFlashAsym3FwhtBatchedMasked,
+     KernelKey::AttnFlashAsym2Batched,
+     KernelKey::AttnFlashAsym2FwhtBatched,
+     KernelKey::AttnQ8_0KvBatchedMasked,
+     // Llama legacy
+     KernelKey::AttnHfq4Kv,
+     KernelKey::AttnQ4Kv,
+ ];
+ 
+ /// All `KernelKey` variants handled by `dispatch_full_attention`.
+-const DISPATCHED_FULL_ATTENTION_KEYS: &[KernelKey] = &[
++const _DISPATCHED_FULL_ATTENTION_KEYS: &[KernelKey] = &[
+     KernelKey::AttnFullF16,
+     KernelKey::AttnFullF32,

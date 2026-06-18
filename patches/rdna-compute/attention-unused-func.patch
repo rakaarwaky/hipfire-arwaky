@@ -1,0 +1,18 @@
+--- a/src/attention.rs
++++ b/src/attention.rs
+@@ -5393,11 +5393,11 @@
+         )?;
+-        let func = &self.functions["kv_cache_write"];
++        let _func = &self.functions["kv_cache_write"];
+ 
+         let dst_ptr = dst.buf.as_ptr();
+         let src_ptr = src.buf.as_ptr();
+         let pos_ptr = pos_buf.as_ptr();
+         let kd = kv_dim as i32;
+ 
+         let mut params: Vec<*mut c_void> = vec![
+             &dst_ptr as *const _ as *mut c_void,
+             &src_ptr as *const _ as *mut c_void,
+             &pos_ptr as *const _ as *mut c_void,
+             &kd as *const _ as *mut c_void,
+         ];
