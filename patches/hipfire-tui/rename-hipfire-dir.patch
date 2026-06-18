@@ -1,0 +1,39 @@
+diff --git a/crates/hipfire-tui/src/hipfire/mod.rs b/crates/hipfire-tui/src/hipfire/mod.rs
+index cb1a2f23..997b6bdb 100644
+--- a/crates/hipfire-tui/src/hipfire/mod.rs
++++ b/crates/hipfire-tui/src/hipfire/mod.rs
+@@ -28,7 +28,7 @@ impl HipfirePaths {
+         let home = env::var_os("HOME")
+             .map(PathBuf::from)
+             .unwrap_or_else(|| PathBuf::from("."));
+-        let root = home.join(".hipfire");
++        let root = home.join(".hipfire-arwaky");
+         let cwd = env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+         Self {
+             models: root.join("models"),
+diff --git a/crates/hipfire-tui/src/hipfire/status.rs b/crates/hipfire-tui/src/hipfire/status.rs
+index ea521b96..62c9c9b6 100644
+--- a/crates/hipfire-tui/src/hipfire/status.rs
++++ b/crates/hipfire-tui/src/hipfire/status.rs
+@@ -33,7 +33,7 @@ impl StatusState {
+         let (serve_http_ok, health_text) = probe_health(config);
+         let gpu_lines = detect_gpu_lines();
+         let paths_ok = vec![
+-            ("~/.hipfire".into(), paths.root.exists()),
++            ("~/.hipfire-arwaky".into(), paths.root.exists()),
+             ("models".into(), paths.models.exists()),
+             ("config.json".into(), paths.config.exists()),
+             (
+diff --git a/crates/hipfire-tui/src/ui.rs b/crates/hipfire-tui/src/ui.rs
+index 1b935cdd..6a7c9316 100644
+--- a/crates/hipfire-tui/src/ui.rs
++++ b/crates/hipfire-tui/src/ui.rs
+@@ -575,7 +575,7 @@ fn draw_system(frame: &mut Frame, app: &App, area: Rect) {
+         )),
+     ];
+     if app.registry.local_files.is_empty() {
+-        diagnostic_lines.push(Line::from("No local models under ~/.hipfire/models."));
++        diagnostic_lines.push(Line::from("No local models under ~/.hipfire-arwaky/models."));
+     } else {
+         diagnostic_lines.extend(
+             app.registry
