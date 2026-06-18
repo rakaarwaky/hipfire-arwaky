@@ -1,5 +1,5 @@
 use std::fs;
-use std::io::{self, Write};
+use std::io::{self};
 use std::os::unix::process::CommandExt;
 use std::path::PathBuf;
 use std::process::{self, Command};
@@ -73,6 +73,8 @@ fn print_usage() {
     println!("Native commands (standalone, uses ~/.hipfire-arwaky/):");
     println!("  run <model.hfq> [prompt]   Interactive REPL or single prompt");
     println!("  chat <model.hfq> [prompt]  Alias for run");
+    println!("  serve [host] [port] [-d]   Start daemon server (OpenAI-compatible API)");
+    println!("  stop                       Stop daemon server");
     println!("  config                     Configuration editor (interactive TUI)");
     println!("  config get <key>           Get config value");
     println!("  config set <key> <value>   Set config value");
@@ -80,12 +82,6 @@ fn print_usage() {
     println!("  list [-r]                  List downloaded models in ~/.hipfire-arwaky/models/");
     println!("  version                    Print version info");
     println!("  help                       Show this help");
-    println!();
-    println!("Delegated commands (require upstream hipfire CLI at ~/.hipfire/bin/hipfire):");
-    println!("  serve [host] [port] [-d]   Start daemon server (OpenAI-compatible API)");
-    println!("  stop                       Stop daemon server");
-    println!("  pull <model>               Download a model (from hipfire registry)");
-    println!("  quantize <hf-id|dir>       Quantize model to HFQ");
     println!();
     println!("Config directory: {}", hipfire_arwaky_dir().display());
     println!("Config file:      {}", config_path().display());
@@ -261,8 +257,8 @@ fn main() {
         "stop" => delegate_upstream("stop", rest),
         "config" => cmd_config(rest),
         "list" | "ls" => cmd_list(rest),
-        "pull" => cmd_pull(rest),
-        "quantize" => cmd_quantize(rest),
+        "pull" => delegate_upstream("pull", rest),
+        "quantize" => delegate_upstream("quantize", rest),
         "tui" => exec_native("hipfire-arwaky-tui", rest),
         "version" | "--version" | "-v" => {
             println!("hipfire-arwaky {}", HIPFIRE_ARWAKY_VERSION);

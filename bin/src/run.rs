@@ -63,7 +63,6 @@ fn main() {
     let mut speculative = false;
     let mut spec_k: usize = 4;
     let mut no_penalty = false;
-    let mut i = 2;
     while i < args.len() {
         match args[i].as_str() {
             "--system" | "-s" => { i += 1; system_prompt = Some(args[i].clone()); }
@@ -419,7 +418,6 @@ fn main() {
         new_tokens.extend_from_slice(&asst_tok);
         new_tokens.extend_from_slice(&nl);
 
-        let t0 = Instant::now();
         for (i, &tok) in new_tokens.iter().enumerate() {
             target_slot.forward(&mut gpu, tok, seq_pos + i).unwrap();
             if spec_active {
