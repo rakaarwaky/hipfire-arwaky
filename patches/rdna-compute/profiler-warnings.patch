@@ -1,0 +1,18 @@
+--- a/src/profiler.rs	2026-06-18 16:39:37.977510625 +0700
++++ b/src/profiler.rs	2026-06-18 16:39:38.006785223 +0700
+@@ -318,7 +318,6 @@
+ 
+             let meta = RawKernelMeta {
+                 pgm_rsrc1: u32_le(elf, kd_off + 48),
+-                pgm_rsrc2: u32_le(elf, kd_off + 52),
+                 group_segment_size: u32_le(elf, kd_off),
+                 private_segment_size: u32_le(elf, kd_off + 4),
+                 kernarg_size: u64_le(elf, kd_off + 8),
+@@ -357,7 +356,6 @@
+ 
+ struct RawKernelMeta {
+     pgm_rsrc1: u32,
+-    pgm_rsrc2: u32,
+     group_segment_size: u32,
+     private_segment_size: u32,
+     kernarg_size: u64,

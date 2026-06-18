@@ -1,0 +1,11 @@
+--- a/src/attention.rs	2026-06-18 16:39:37.976897615 +0700
++++ b/src/attention.rs	2026-06-18 16:39:38.003159091 +0700
+@@ -5398,7 +5398,7 @@
+             kernels::KV_CACHE_WRITE_SRC,
+             "kv_cache_write",
+         )?;
+-        let func = &self.functions["kv_cache_write"];
++        let _func = &self.functions["kv_cache_write"];
+ 
+         let dst_ptr = dst.buf.as_ptr();
+         let src_ptr = src.buf.as_ptr();

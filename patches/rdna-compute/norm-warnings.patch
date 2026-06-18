@@ -1,6 +1,7 @@
---- a/src/norm.rs
-+++ b/src/norm.rs
+--- a/src/norm.rs	2026-06-18 16:39:37.977431046 +0700
++++ b/src/norm.rs	2026-06-18 16:39:38.006676960 +0700
 @@ -357,7 +357,7 @@
+     ) -> HipResult<()> {
          self.bind_thread()?;
          self.ensure_kernel("rope", kernels::ROPE_SRC, "rope_f32")?;
 -        let func = &self.functions["rope_f32"];
@@ -9,6 +10,7 @@
          let q_ptr = q.buf.as_ptr();
          let k_ptr = k.buf.as_ptr();
 @@ -2285,7 +2285,7 @@
+     pub fn bias_add_f32(&mut self, x: &GpuTensor, bias: &GpuTensor, batch: usize, n: usize) -> HipResult<()> {
          self.bind_thread()?;
          self.ensure_kernel("bias_add_f32", kernels::BIAS_ADD_SRC, "bias_add_f32")?;
 -        let func = &self.functions["bias_add_f32"];
