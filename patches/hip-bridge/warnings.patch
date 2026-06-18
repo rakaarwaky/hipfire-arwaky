@@ -1,0 +1,24 @@
+diff --git a/crates/hip-bridge/src/rccl.rs b/crates/hip-bridge/src/rccl.rs
+index 93782b1d..279d63bb 100644
+--- a/crates/hip-bridge/src/rccl.rs
++++ b/crates/hip-bridge/src/rccl.rs
+@@ -75,6 +75,7 @@ pub struct RcclComms {
+     _lib: Library,
+     comms: Vec<NcclComm>,
+ 
++    #[allow(dead_code)] // stored for future ncclSend/ncclRecv; currently only used in init_all construction
+     fn_comm_init_all: unsafe extern "C" fn(*mut NcclComm, c_int, *const c_int) -> u32,
+     fn_comm_destroy: unsafe extern "C" fn(NcclComm) -> u32,
+     fn_all_reduce: unsafe extern "C" fn(
+diff --git a/crates/hip-bridge/src/rocblas.rs b/crates/hip-bridge/src/rocblas.rs
+index 2f0dd328..09f00905 100644
+--- a/crates/hip-bridge/src/rocblas.rs
++++ b/crates/hip-bridge/src/rocblas.rs
+@@ -61,6 +61,7 @@ pub enum RocblasDatatype {
+ #[derive(Debug, Clone, Copy)]
+ pub enum RocblasGemmAlgo {
+     Standard = 160,
++    #[allow(dead_code)] // reserved for future tuned-kernel dispatch via solution index
+     SolutionIndex = 161,
+ }
+ 

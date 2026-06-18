@@ -78,14 +78,14 @@
  # Tokenizer-parity helper: reads a .hfq's tokenizer + tokenizes a text slice.
  # No GPU / arch features needed (tokenizer is pure CPU).
  [[example]]
-@@ -385,6 +354,10 @@
+@@ -385,10 +354,6 @@
  # `required-features = ["arch-qwen35", "arch-llama"]` (or whichever
  # arches the Tier 1 path supports).
  [[bin]]
-+name = "hipfire-arwaky"
-+path = "src/bin/hipfire-arwaky.rs"
-+
-+[[bin]]
+-name = "hipfire-arwaky"
+-path = "src/bin/hipfire-arwaky.rs"
+-
+-[[bin]]
  name = "collect_imatrix"
  path = "src/bin/collect_imatrix.rs"
  required-features = []
